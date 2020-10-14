@@ -28,7 +28,8 @@
   <body>
     <div class="calculator">
         <form id="math_input">
-          <input class="textview" />
+          <input type="text" class="textview" value=""
+                 onkeypress="return isValidKey(event)"/>
         </form>
 
       <table>
