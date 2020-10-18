@@ -1,72 +1,42 @@
+<!-- 
+  For the purpose of styling in junction with the styles.css
+  most of the HTML elements are also originally derived from
+  Code Explained's Scientific Calculator Repo / Youtube Video.
+
+  Link to the Repo
+  https://github.com/CodeExplainedRepo/Scientific-Calculator-JavaScript 
+
+  Link to the youtube tutorial
+  https://www.youtube.com/watch?v=52GL_cfLBYs&t=58s&ab_channel=CodeExplained
+-->
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CS 480 Calculator</title>
-    <script src="MathFunctions.js"></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
-
-      .button {
-        width: 50;
-        height: 50;
-        font-size: 25;
-        margin: 2;
-      }
-
-      .textview {
-        width: 275;
-        margin: 5;
-        font-size: 25;
-        padding: 5;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="calculator">
-        <form id="math_input">
-          <input type="text" class="textview" value=""
-                 onkeypress="return isValidKey(event)"/>
-        </form>
+      <div class="calc-container">        
+        <div class="screen">
+          
+          <div class="user_input">
+            <div class="value"></div>
+          </div>
 
-      <table>
-        <tr>
-          <td><input class="button" type="button" value="sin" /></td>
-          <td><input class="button" type="button" value="log" /></td>
-          <td><input class="button" type="button" value="ln" /></td>
-          <td><input class="button" type="button" value="AC" /></td>
-          <td><input class="button" type="button" value="&divide;" /></td>
-        </tr>
-        <tr>
-          <td><input class="button" type="button" value="cos" /></td>
-          <td><input class="button" type="button" value="7" /></td>
-          <td><input class="button" type="button" value="8" /></td>
-          <td><input class="button" type="button" value="9" /></td>
-          <td><input class="button" type="button" value="x" /></td>
-        </tr>
-        <tr>
-          <td><input class="button" type="button" value="tan" /></td>
-          <td><input class="button" type="button" value="4" /></td>
-          <td><input class="button" type="button" value="5" /></td>
-          <td><input class="button" type="button" value="6" /></td>
-          <td><input class="button" type="button" value="-" /></td>
-        </tr>
-        <tr>
-          <td><input class="button" type="button" value="cot" /></td>
-          <td><input class="button" type="button" value="1" /></td>
-          <td><input class="button" type="button" value="2" /></td>
-          <td><input class="button" type="button" value="3" /></td>
-          <td><input class="button" type="button" value="+" /></td>
-        </tr>
-        <tr>
-          <td><input class="button" type="button" value="." /></td>
-          <td><input class="button" type="button" value="0" /></td>
-          <td><input class="button" type="button" value="=" onclick="test();"/></td>
-        </tr>
-      </table>
+          <div class="result">
+            <div class="value">0</div>
+          </div>
+
+        </div>
+
+        <div class="keyboard">
+          
+        </div>
+      </div>  
     </div>
+    <script src="MathFunctions.js"></script>
   </body>
 </html>
