@@ -14,7 +14,7 @@ let calc_buttons = [
   {
     name: "cos",
     symbol: "cos",
-    value: "",
+    value: "Math.cos(",
     type: "trig_func",
   },
   {
@@ -26,49 +26,49 @@ let calc_buttons = [
   {
     name: "delete",
     symbol: "←",
-    formula: false,
+    value: false,
     type: "key",
   },
   {
     name: "tan",
     symbol: "tan",
-    value: "",
+    value: "Math.tan(",
     type: "trig_func",
   },
   {
     name: "cot",
     symbol: "cot",
-    value: "",
+    value: "1/Math.tan(",
     type: "trig_func",
   },
   {
     name: "open-paren",
     symbol: "(",
-    formula: "(",
+    value: "(",
     type: "number",
   },
   {
     name: "close-paren",
     symbol: ")",
-    formula: ")",
+    value: ")",
     type: "number",
   },
   {
     name: "ln",
     symbol: "ln",
-    value: "Math.log",
+    value: "Math.log(",
     type: "math_func",
   },
   {
     name: "log",
     symbol: "log",
-    value: "Math.log10",
+    value: "Math.log10(",
     type: "math_func",
   },
   {
     name: "exponent",
     symbol: "^",
-    value: "Math.pow",
+    value: "Math.pow( ,",
     type: "math_func",
   },
   {
@@ -200,7 +200,7 @@ keyboard_element.addEventListener("click", (event) => {
   const target_button = event.target;
 
   calc_buttons.forEach((button) => {
-    if(button.name == target_button.id) {
+    if (button.name == target_button.id) {
       onButtonPress(button);
     }
   });
@@ -208,55 +208,133 @@ keyboard_element.addEventListener("click", (event) => {
 
 // Button On Press Handler
 function onButtonPress(button) {
-  if(button.type == "operator") {
 
+  // updates input operators
+  if (button.type == "operator") {
     calc_data.expression.push(button.symbol);
     calc_data.equiv_form.push(button.value);
-
-  } else if(button.type == "number") {
-
+  } 
+  
+  // updates input numbers and ()'s
+  else if (button.type == "number") {
     calc_data.expression.push(button.symbol);
     calc_data.equiv_form.push(button.value);
-
-  } else if(button.type == "trig_func") {
-    
-  } else if(button.type == "mathy_func") {
-    
-  } else if(button.type == "key") {
-    
-    if(button.name == "all-clear") {
-
+  } 
+  
+  // updates input for trig functions
+  else if (button.type == "trig_func") {
+    if(button.name == "sin") {
+      calc_data.expression.push("sin(");
+      calc_data.equiv_form.push(button.value);
+    }
+    else if(button.name == "cos") {
+      calc_data.expression.push("cos(");
+      calc_data.equiv_form.push(button.value);
+    }
+    else if(button.name == "tan") {
+      calc_data.expression.push("tan(");
+      calc_data.equiv_form.push(button.value);
+    }
+    else if(button.name == "cot") {
+      calc_data.expression.push("cot(");
+      calc_data.equiv_form.push(button.value);
+    } 
+  } 
+  
+  // updates input for math functions
+  else if (button.type == "math_func") {
+    if(button.name == "log") {
+      calc_data.expression.push("log(");
+      calc_data.equiv_form.push(button.value);
+    }
+    else if(button.name == "ln") {
+      calc_data.expression.push("ln(");
+      calc_data.equiv_form.push(button.value);
+    }
+    else if(button.name == "exponent") {
+      calc_data.expression.push("^(");
+      calc_data.equiv_form.push(button.value);
+    }
+  } 
+  
+  // updates input for other keys
+  else if (button.type == "key") {
+    if (button.name == "all-clear") {
       calc_data.expression = [];
       calc_data.equiv_form = [];
 
       updateResultToScreen(0);
-
-    } else if( button.name == "delete") {
-
+    } else if (button.name == "delete") {
       calc_data.expression.pop();
       calc_data.equiv_form.pop();
-
     }
-  } else if(button.type == "calculate") {
-    
-    equiv_js_expression = calc_data.equiv_form.join('');
-
-    try {
-      let result = eval(equiv_js_expression);
-      updateResultToScreen(result);
-    }
-    catch(error) {
-      console.log(error);
-    }
-
-    // Testing syntax
-    
-    //checkSyntax();
-
+  } 
+  
+  // updates input for calculate "=" button
+  else if (button.type == "calculate") {
+    let equiv_js_expression = calc_data.equiv_form.join("");
+    onCalculatePress(equiv_js_expression);
   }
 
-  updateInputToScreen(calc_data.expression.join(''));
+  //testing to view the equivalent js expression as it forms
+  console.log("equivalent: ", calc_data.equiv_form.join(''));
 
+  updateInputToScreen(calc_data.expression.join(""));
+}
+
+/**
+ * Special calculate button press that handles error checking and 
+ * expression evaluation when the user clicks "=".
+ */
+function onCalculatePress(expression) {
+  console.log("Expression on calc: ", expression);
+  
+  // Testing for syntax
+  let isSyntaxError = checkSyntax();
+  console.log("Syntax error? ", isSyntaxError);
+
+  // Testing for number size overflow (check for is == Infinity and is == -Infinity)
+  let isOverflow;
+  
+  // Testing for non real numbers (negative in a square root) check for NaN? (operation couldn't be done)
+  let isImaginary;
+
+  // Checking if any errors are flagged and passing the appropriate error message
+  if (isSyntaxError) {
+    updateResultToScreen("Syntax Error!");
+  } 
+  
+  else {
+
+    let result = eval(expression);
+    /**
+     * THIS IS NOT A MATH EVAL FUNCTION!
+     * 
+     * This is a built in JavaScript function called "eval"
+     * which allows JavaScript code such as "Math.pow(3, 4)" to be
+     * exectucted from a string.
+     * 
+     * This allows me to execute something like log(3 * 4) + pow(2, 4) / ln(1024) as JavaScript code.
+     * The distinction is that this handles absolutely no parsing or 
+     * expression evaluation for math syntax, error syntax, or logic syntax.
+     * 
+     * 
+     * It only attempts to execute JS code, such as
+     * 
+     * "int number = 86 + Math.tan(43) / 7.3;"
+     *  or
+     * "eval(console.log("Hello World"));"
+     * 
+     * 
+     * which would try to execute --> console.log("Hello World"); as code
+     * so then hello world would be printed to the web console. 
+     * 
+     * What this means is that I am building my own math evaluation function, 
+     * not using an existing one!
+     * 
+     */
+    updateResultToScreen(result);
+  }
 }
 
 // Updating the user input to the screen
@@ -268,9 +346,61 @@ function updateResultToScreen(result) {
   result_element.innerHTML = result;
 }
 
+
+/**
+ * --------------------------------------------
+ * -- Error Checking Functions ---
+ * --------------------------------------------
+ */
+
+// FIX ISSUES WITH COUNTING PARENTHESES
+
 function checkSyntax() {
-  //return true / false?
+  let error = false;
+
+  let leftParen = 0;
+  let rightParen = 0;
+
+  // Checks if matching amount of parentheses
+  // calc_data.expression.forEach(function (elem) {
+  //   if (elem === "(") {
+  //     leftParen++;
+  //   } else if (elem === ")") {
+  //     rightParen++;
+  //   }
+  // });
+
+  // if (leftParen != rightParen) {
+  //   console.log("left ", leftParen, " right", rightParen);
+  //   error = true;
+  // }
+
+  // Checks for empty parentheses
+  // for (let i = 1; i < calc_data.expression.length; i++) {
+  //   if (
+  //     calc_data.expression[i - 1] === "(" &&
+  //     calc_data.expression[i] === ")"
+  //   ) {
+  //     error = true;
+  //   }
+
+  // }
+
+  return error;
 }
+
+/**
+ * --------------------------------------------
+ * -- Utility Functions ---
+ * --------------------------------------------
+ */
+function degToRad(degrees) {
+  return degrees * (Math.PI / 180);
+};
+
+function radToDeg(rad) {
+  return rad / (Math.PI / 180);
+};
 
 // Caclulates the factorial of a number with a check to prevent overflow
 function factorial(num) {
