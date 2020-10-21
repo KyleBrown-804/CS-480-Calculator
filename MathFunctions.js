@@ -8,13 +8,13 @@ let calc_buttons = [
   {
     name: "sin",
     symbol: "sin",
-    value: "Math.sin( ",
+    value: "s (",
     type: "trig_func",
   },
   {
     name: "cos",
     symbol: "cos",
-    value: "Math.cos(",
+    value: "c (",
     type: "trig_func",
   },
   {
@@ -32,13 +32,13 @@ let calc_buttons = [
   {
     name: "tan",
     symbol: "tan",
-    value: "Math.tan(",
+    value: "t (",
     type: "trig_func",
   },
   {
     name: "cot",
     symbol: "cot",
-    value: "1/Math.tan(",
+    value: "o (",
     type: "trig_func",
   },
   {
@@ -56,19 +56,19 @@ let calc_buttons = [
   {
     name: "ln",
     symbol: "ln",
-    value: "Math.log(",
+    value: "n (",
     type: "math_func",
   },
   {
     name: "log",
     symbol: "log",
-    value: "Math.log10(",
+    value: "g (",
     type: "math_func",
   },
   {
     name: "exponent",
     symbol: "^",
-    value: "Math.pow( ,",
+    value: "^ (",
     type: "math_func",
   },
   {
@@ -221,7 +221,7 @@ function onButtonPress(button) {
     calc_data.equiv_form.push(button.value);
   } 
   
-  // updates input for trig functions
+  // updates screen input for trig functions
   else if (button.type == "trig_func") {
     if(button.name == "sin") {
       calc_data.expression.push("sin(");
@@ -241,7 +241,7 @@ function onButtonPress(button) {
     } 
   } 
   
-  // updates input for math functions
+  // updates screen input for math functions
   else if (button.type == "math_func") {
     if(button.name == "log") {
       calc_data.expression.push("log(");
@@ -262,8 +262,8 @@ function onButtonPress(button) {
     if (button.name == "all-clear") {
       calc_data.expression = [];
       calc_data.equiv_form = [];
-
       updateResultToScreen(0);
+
     } else if (button.name == "delete") {
       calc_data.expression.pop();
       calc_data.equiv_form.pop();
@@ -272,7 +272,9 @@ function onButtonPress(button) {
   
   // updates input for calculate "=" button
   else if (button.type == "calculate") {
-    let equiv_js_expression = calc_data.equiv_form.join("");
+    console.log("calc_data: ", calc_data.equiv_form);
+
+    let equiv_js_expression = calc_data.equiv_form.join(""); // issue
     onCalculatePress(equiv_js_expression);
   }
 
@@ -288,7 +290,11 @@ function onButtonPress(button) {
  */
 function onCalculatePress(expression) {
   console.log("Expression on calc: ", expression);
-  
+
+  console.log("--------TEST POSTFIX----------");
+    tester(expression);
+  console.log("------------------------------");
+
   // Testing for syntax
   let isSyntaxError = checkSyntax();
   console.log("Syntax error? ", isSyntaxError);
@@ -305,34 +311,7 @@ function onCalculatePress(expression) {
   } 
   
   else {
-
     let result = eval(expression);
-    /**
-     * THIS IS NOT A MATH EVAL FUNCTION!
-     * 
-     * This is a built in JavaScript function called "eval"
-     * which allows JavaScript code such as "Math.pow(3, 4)" to be
-     * exectucted from a string.
-     * 
-     * This allows me to execute something like log(3 * 4) + pow(2, 4) / ln(1024) as JavaScript code.
-     * The distinction is that this handles absolutely no parsing or 
-     * expression evaluation for math syntax, error syntax, or logic syntax.
-     * 
-     * 
-     * It only attempts to execute JS code, such as
-     * 
-     * "int number = 86 + Math.tan(43) / 7.3;"
-     *  or
-     * "eval(console.log("Hello World"));"
-     * 
-     * 
-     * which would try to execute --> console.log("Hello World"); as code
-     * so then hello world would be printed to the web console. 
-     * 
-     * What this means is that I am building my own math evaluation function, 
-     * not using an existing one!
-     * 
-     */
     updateResultToScreen(result);
   }
 }
