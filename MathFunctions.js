@@ -8,13 +8,13 @@ let calc_buttons = [
   {
     name: "sin",
     symbol: "sin",
-    value: "s (",
+    value: "(s",
     type: "trig_func",
   },
   {
     name: "cos",
     symbol: "cos",
-    value: "c (",
+    value: "(c",
     type: "trig_func",
   },
   {
@@ -32,13 +32,13 @@ let calc_buttons = [
   {
     name: "tan",
     symbol: "tan",
-    value: "t (",
+    value: "(t",
     type: "trig_func",
   },
   {
     name: "cot",
     symbol: "cot",
-    value: "o (",
+    value: "(o",
     type: "trig_func",
   },
   {
@@ -56,19 +56,19 @@ let calc_buttons = [
   {
     name: "ln",
     symbol: "ln",
-    value: "n (",
+    value: "n",
     type: "math_func",
   },
   {
     name: "log",
     symbol: "log",
-    value: "g (",
+    value: "g",
     type: "math_func",
   },
   {
     name: "exponent",
     symbol: "^",
-    value: "^ (",
+    value: "^",
     type: "math_func",
   },
   {
@@ -224,19 +224,19 @@ function onButtonPress(button) {
   // updates screen input for trig functions
   else if (button.type == "trig_func") {
     if(button.name == "sin") {
-      calc_data.expression.push("sin(");
+      calc_data.expression.push("(sin");
       calc_data.equiv_form.push(button.value);
     }
     else if(button.name == "cos") {
-      calc_data.expression.push("cos(");
+      calc_data.expression.push("(cos");
       calc_data.equiv_form.push(button.value);
     }
     else if(button.name == "tan") {
-      calc_data.expression.push("tan(");
+      calc_data.expression.push("(tan");
       calc_data.equiv_form.push(button.value);
     }
     else if(button.name == "cot") {
-      calc_data.expression.push("cot(");
+      calc_data.expression.push("(cot");
       calc_data.equiv_form.push(button.value);
     } 
   } 
@@ -244,15 +244,15 @@ function onButtonPress(button) {
   // updates screen input for math functions
   else if (button.type == "math_func") {
     if(button.name == "log") {
-      calc_data.expression.push("log(");
+      calc_data.expression.push("log");
       calc_data.equiv_form.push(button.value);
     }
     else if(button.name == "ln") {
-      calc_data.expression.push("ln(");
+      calc_data.expression.push("ln");
       calc_data.equiv_form.push(button.value);
     }
     else if(button.name == "exponent") {
-      calc_data.expression.push("^(");
+      calc_data.expression.push("^");
       calc_data.equiv_form.push(button.value);
     }
   } 
@@ -274,7 +274,7 @@ function onButtonPress(button) {
   else if (button.type == "calculate") {
     console.log("calc_data: ", calc_data.equiv_form);
 
-    let equiv_js_expression = calc_data.equiv_form.join(""); // issue
+    let equiv_js_expression = calc_data.equiv_form.join("");
     onCalculatePress(equiv_js_expression);
   }
 
@@ -284,36 +284,19 @@ function onButtonPress(button) {
   updateInputToScreen(calc_data.expression.join(""));
 }
 
+
 /**
- * Special calculate button press that handles error checking and 
+ * Special calculate button press that begins the
  * expression evaluation when the user clicks "=".
  */
 function onCalculatePress(expression) {
   console.log("Expression on calc: ", expression);
 
-  console.log("--------TEST POSTFIX----------");
-    tester(expression);
+  console.log("--------INFIX TO POSTFIX CALL----------");
+  let computation = convertThenEval(expression);
   console.log("------------------------------");
 
-  // Testing for syntax
-  let isSyntaxError = checkSyntax();
-  console.log("Syntax error? ", isSyntaxError);
-
-  // Testing for number size overflow (check for is == Infinity and is == -Infinity)
-  let isOverflow;
-  
-  // Testing for non real numbers (negative in a square root) check for NaN? (operation couldn't be done)
-  let isImaginary;
-
-  // Checking if any errors are flagged and passing the appropriate error message
-  if (isSyntaxError) {
-    updateResultToScreen("Syntax Error!");
-  } 
-  
-  else {
-    let result = eval(expression);
-    updateResultToScreen(result);
-  }
+  updateResultToScreen(computation);
 }
 
 // Updating the user input to the screen
@@ -323,74 +306,4 @@ function updateInputToScreen(expression) {
 
 function updateResultToScreen(result) {
   result_element.innerHTML = result;
-}
-
-
-/**
- * --------------------------------------------
- * -- Error Checking Functions ---
- * --------------------------------------------
- */
-
-// FIX ISSUES WITH COUNTING PARENTHESES
-
-function checkSyntax() {
-  let error = false;
-
-  let leftParen = 0;
-  let rightParen = 0;
-
-  // Checks if matching amount of parentheses
-  // calc_data.expression.forEach(function (elem) {
-  //   if (elem === "(") {
-  //     leftParen++;
-  //   } else if (elem === ")") {
-  //     rightParen++;
-  //   }
-  // });
-
-  // if (leftParen != rightParen) {
-  //   console.log("left ", leftParen, " right", rightParen);
-  //   error = true;
-  // }
-
-  // Checks for empty parentheses
-  // for (let i = 1; i < calc_data.expression.length; i++) {
-  //   if (
-  //     calc_data.expression[i - 1] === "(" &&
-  //     calc_data.expression[i] === ")"
-  //   ) {
-  //     error = true;
-  //   }
-
-  // }
-
-  return error;
-}
-
-/**
- * --------------------------------------------
- * -- Utility Functions ---
- * --------------------------------------------
- */
-function degToRad(degrees) {
-  return degrees * (Math.PI / 180);
-};
-
-function radToDeg(rad) {
-  return rad / (Math.PI / 180);
-};
-
-// Caclulates the factorial of a number with a check to prevent overflow
-function factorial(num) {
-  if (num === 0 || num === 1) return 1;
-
-  let fact = 1;
-
-  for (let i = 1; i <= num; i++) {
-    fact *= fact * i;
-    if (fact === Infinity) return Infinity;
-  }
-
-  return fact;
 }
