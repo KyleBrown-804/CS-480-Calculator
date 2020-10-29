@@ -3,8 +3,9 @@ CS 480 Lab 3 Scientific Calculator
 
 Compatibility:
     This should be compatible with any modern browser. This was tested and 
-    developed for google chrome, however most functionality should work
-    for internet explorer or firefox as well.
+    developed for google chrome, functionality should work for Firefox, Edge,
+    Opera, and Safari as well. The only browser that does not support the ES6 features used
+    or CSS styling such as Flex-Box is Internet Explorer.
 
     Important Note:
         Since this is created with HTML, CSS, and JavaScript there is no such
